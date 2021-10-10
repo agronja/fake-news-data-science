@@ -5,19 +5,26 @@ import sys
 import csv
 
 def main():
-    with open('data/True.csv') as csvfile:
-        csv_reader = csv.reader(csvfile, delimiter=',')
-        for idxa, rowa in enumerate(csv_reader):
-            if idxa == 0:
+    with open('data/True.csv', 'r') as infile, open('data/combined.csv', 'w') as outfile:
+        seen = set()
+        x = 0
+        for line in infile:
+            if line in seen:
                 continue
-            with open('data/True.csv') as csvfile2:
-                csv_reader2 = csv.reader(csvfile2, delimiter=',')
-                for idxb, rowb in enumerate(csv_reader2):
-                    if idxb <= idxa:
-                        continue
-                    if rowa[0] == rowb[0]:
-                        print("duplicate: ", rowa[0], idxa, idxb)
 
+            seen.add(line)
+            line_write = line.strip().split(',')
+            line_write.pop(-1)
+            line_write.pop(-1)
+            line_write.pop(-1)
+            if not x:
+                line_write.append('text')
+                line_write.append('label\n')
+                x += 1
+            else:
+                line_write.append('1\n')
+            outfile.write(",".join(line_write))
+        
 
 if __name__ == '__main__':
     main()
